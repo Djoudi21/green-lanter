@@ -1,8 +1,9 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import { Database, Globe} from "lucide-react";
+import {ChevronDown, ChevronUp, Database, Globe} from "lucide-react";
 import {AdditionalPageResult} from "@/types/scanner";
 import {useState} from "react";
 import {Toto} from "@/app/scanner/toto";
+import { Button } from "@/components/ui/button";
 
 export interface AdditionalPagesProps {
     pages: AdditionalPageResult[]
@@ -24,6 +25,7 @@ export function AdditionalPages({
                                 }: AdditionalPagesProps) {
     console.log("PAGES", pages)
     const [visibleRemainings, setVisibleRemainings] = useState(false);
+    const [showAll, setShowAll] = useState(false)
 
     if (pages.length === 0) {
         return (
@@ -53,14 +55,14 @@ export function AdditionalPages({
                         <Toto key={page.id} page={page} />
                     ))}
 
-                    {visibleRemainings &&
+                    {showAll &&
                         pages.slice(maxDisplayedPages).map((page) => (
                             <Toto key={page.id} page={page} />
                         ))}
 
-                    {remainingPages > 0 && !visibleRemainings ? (
+                    {remainingPages > 0 && !showAll ? (
                         <div
-                            onClick={() => setVisibleRemainings(true)}
+                            onClick={() => setShowAll(!showAll)}
                             className="text-center p-4 bg-green-500/10 rounded-lg border border-green-500/30 cursor-pointer hover:bg-green-500/20 transition-colors"
                         >
                             <div className="text-green-400 font-bold text-sm mb-1">
@@ -70,7 +72,16 @@ export function AdditionalPages({
                                 The Green Lantern Corps has analyzed {totalPagesScanned} total pages from this domain
                             </div>
                         </div>
-                    ) : null}
+                    ) : (
+                        <div
+                            onClick={() => setShowAll(!showAll)}
+                            className="text-center p-4 bg-green-500/10 rounded-lg border border-green-500/30 cursor-pointer hover:bg-green-500/20 transition-colors"
+                        >
+                            <div className="text-green-400 font-bold text-sm mb-1">
+                                Show Less
+                            </div>
+                        </div>
+                    )}
                 </div>
             </CardContent>
         </Card>
