@@ -45,7 +45,6 @@ export function EnvironmentalBadge({
     const topRank = Math.round((1 - cleanerThan) * 100)
     const rating = getCarbonRating(cleanerThan)
     const hostingStatus = getHostingStatus(green)
-    console.log("TOP", topRank)
     const downloadBadge = (size: string) => {
         const sizeConfig = badgeSizes[size]
         if (!sizeConfig) return

@@ -25,6 +25,7 @@ import {
 } from "@/types/scanner";
 import { FullScanCTA } from "./full-scan-cta"
 import {ScanProgress} from "@/app/scanner/scan-progress";
+import {FullScanConfirmationModal} from "@/app/scanner/full-scan-confirmation-modal";
 
 export function mapWebsiteCarbonResponsesToAdditionalPages(
     responses: WebsiteCarbonApiResponse[] | undefined,
@@ -52,6 +53,7 @@ export default function WebScanner() {
   const [scanInProgress, setScanInProgress] = useState(false)
   const [pagesScanned, setPagesScanned] = useState(globalPagesScanned)
   const [isFullScan, setIsFullScan] = useState(false)
+const [isModalOpen, setIsModalOpen] = useState(false)
 
   const validateUrl = (url: string) => {
     try {
@@ -207,8 +209,11 @@ export default function WebScanner() {
             onKeyPress={(e) => e.key === "Enter" && scanWebsite()}
             error={error}
             onClick={async () => {
-              return isFullScan ? startFullScan() : scanWebsite()
-            }}
+              if(isFullScan){
+                setIsModalOpen(true)
+              } else {
+                await scanWebsite()
+            }}}
             isScanning={scanInProgress}
             fullScanInProgress={scanInProgress}
             setIsFullScan={(isFullScan) => setIsFullScan(isFullScan)}
@@ -338,10 +343,9 @@ export default function WebScanner() {
                   {results.numberOfPagesScanned === 1 && (
                       <FullScanCTA
                           hostname={new URL(results.url).hostname}
-                          onStartFullScanAction={async () => {
+                          onStartFullScanAction={() => {
                             setIsFullScan(true)
-                            setScanInProgress(true)
-                            await startFullScan()
+                            setIsModalOpen(true)
                           }}
                           buttonProps={{
                             className: "bg-green-500 hover:bg-green-600 text-black font-bold",
@@ -359,6 +363,11 @@ export default function WebScanner() {
               />
             </div>
         )}
+
+        <FullScanConfirmationModal isOpen={isModalOpen} onCloseAction={() => setIsModalOpen(false)} onConfirmAction={async () => {
+          setIsModalOpen(false)
+          await startFullScan()
+        }} hostname={"hostname"} />
       </div>
     </div>
   )
