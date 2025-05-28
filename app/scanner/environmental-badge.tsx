@@ -1,38 +1,116 @@
-import {Globe, Leaf, Shield} from "lucide-react";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import {Button} from "@/components/ui/button";
-import {BadgePreview} from "@/app/scanner/badge-preview";
-import {getCarbonRating} from "@/lib/utils";
+"use client"
 
-interface BadgeProps {
+import type React from "react"
+
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Shield, Zap, Globe, Leaf } from "lucide-react"
+
+export interface BadgeSize {
+    name: string
+    width: number
+    height: number
+    scale: number
+}
+
+export interface HostingStatus {
+    text: string
+    color: string
+}
+
+export interface CarbonRating {
+    level: string
+    color: string
+    icon: React.ElementType
+    message: string
+}
+
+export interface BadgeProps {
     cleanerThan: number
     green: boolean | null
     url: string
+    pageNumber: number
+    pagesScannedForDomain: number
+    badgeSizes?: Record<string, BadgeSize>
+    onDownload?: (size: string, dataUrl: string) => void
+    onCopyEmbed?: (code: string) => void
+    className?: string
 }
 
-export const  EnvironmentalBadge = ({ cleanerThan, green, url }: BadgeProps)=> {
-    const percentage = Math.round(cleanerThan * 100)
-    const rating = getCarbonRating(cleanerThan, green)
+export function getCarbonRating(cleanerThan: number, green: boolean | null): CarbonRating {
+    const score = cleanerThan * 100
 
-    const getHostingStatus = () => {
-        if (green === true) return { text: "✓ GREEN HOSTING", color: "#10b981" }
-        if (green === false) return { text: "✗ STANDARD HOSTING", color: "#ef4444" }
-        return { text: "? HOSTING UNKNOWN", color: "#6b7280" }
+    if (green === true && score >= 80)
+        return {
+            level: "Green Lantern Elite",
+            color: "bg-green-500",
+            icon: Shield,
+            message: "Exceptional environmental guardian with verified green hosting!",
+        }
+    if (green === true && score >= 60)
+        return {
+            level: "Green Guardian",
+            color: "bg-green-400",
+            icon: Shield,
+            message: "Strong environmental protector with verified green hosting!",
+        }
+    if (green === null && score >= 70)
+        return {
+            level: "Earth Defender",
+            color: "bg-blue-500",
+            icon: Shield,
+            message: "Good performance, but green hosting status unknown!",
+        }
+    if (score >= 70)
+        return {
+            level: "Earth Defender",
+            color: "bg-yellow-500",
+            icon: Shield,
+            message: "Good performance, consider green hosting!",
+        }
+    return {
+        level: "Needs Power Ring",
+        color: "bg-red-500",
+        icon: Shield,
+        message: "Critical optimization needed - join the green hosting corps!",
     }
+}
 
-    const downloadBadge = (size: "small" | "medium" | "large" = "medium") => {
+export function getHostingStatus(green: boolean | null): HostingStatus {
+    if (green === true) return { text: "✓ GREEN HOSTING", color: "#10b981" }
+    if (green === false) return { text: "✗ STANDARD HOSTING", color: "#ef4444" }
+    return { text: "? HOSTING UNKNOWN", color: "#6b7280" }
+}
+
+export function EnvironmentalBadge({
+                                       cleanerThan,
+                                       green,
+                                       url,
+                                       pageNumber,
+                                       pagesScannedForDomain,
+                                       badgeSizes = {
+                                           small: { name: "Small", width: 300, height: 150, scale: 0.75 },
+                                           medium: { name: "Medium", width: 400, height: 200, scale: 1 },
+                                           large: { name: "Large", width: 500, height: 250, scale: 1.25 },
+                                       },
+                                       onDownload,
+                                       onCopyEmbed,
+                                       className = "",
+                                   }: BadgeProps) {
+    const topRank = Math.round((1 - cleanerThan) * 100)
+    const rating = getCarbonRating(cleanerThan, green)
+    const hostingStatus = getHostingStatus(green)
+
+    const downloadBadge = (size: string) => {
+        const sizeConfig = badgeSizes[size]
+        if (!sizeConfig) return
+
         const canvas = document.createElement("canvas")
         const ctx = canvas.getContext("2d")
         if (!ctx) return
 
-        // Set canvas size based on requested size
-        const sizes = {
-            small: { width: 300, height: 150, scale: 0.75 },
-            medium: { width: 400, height: 200, scale: 1 },
-            large: { width: 500, height: 250, scale: 1.25 },
-        }
-
-        const { width, height, scale } = sizes[size]
+        const { width, height, scale } = sizeConfig
         canvas.width = width
         canvas.height = height
 
@@ -68,15 +146,9 @@ export const  EnvironmentalBadge = ({ cleanerThan, green, url }: BadgeProps)=> {
         ctx.fillText("CARBON SCANNER", 20 * scale, 55 * scale)
 
         // Main percentage
-        ctx.fillStyle = "#ffffff"
-        ctx.font = `bold ${48 * scale}px Arial`
-        ctx.fillText(`${percentage}%`, 20 * scale, 110 * scale)
-
-        // Rating text
-        ctx.fillStyle = "#10b981"
-        ctx.font = `bold ${16 * scale}px Arial`
-        ctx.fillText("CLEANER THAN", 20 * scale, 130 * scale)
-        ctx.fillText("OTHER WEBSITES", 20 * scale, 150 * scale)
+        ctx.fillText(`Top ${topRank}%`, 20 * scale, 110 * scale)
+        ctx.fillText("ENVIRONMENTAL", 20 * scale, 130 * scale)
+        ctx.fillText("PERFORMANCE", 20 * scale, 150 * scale)
 
         // Badge level
         const badgeColor = rating.color.includes("green")
@@ -92,7 +164,6 @@ export const  EnvironmentalBadge = ({ cleanerThan, green, url }: BadgeProps)=> {
         ctx.fillText(rating.level.toUpperCase(), 200 * scale, 130 * scale)
 
         // Green hosting indicator with proper unknown handling
-        const hostingStatus = getHostingStatus()
         ctx.fillStyle = hostingStatus.color
         ctx.font = `${12 * scale}px Arial`
         ctx.fillText(hostingStatus.text, 200 * scale, 150 * scale)
@@ -113,38 +184,49 @@ export const  EnvironmentalBadge = ({ cleanerThan, green, url }: BadgeProps)=> {
         ctx.font = `${8 * scale}px Arial`
         ctx.fillText("Verified by Green Lantern Carbon Scanner", width - 200 * scale, height - 10 * scale)
 
-        // Download the badge
-        const link = document.createElement("a")
-        link.download = `green-lantern-badge-${percentage}percent-${size}.png`
-        link.href = canvas.toDataURL("image/png", 1.0)
-        link.click()
+        // Get the data URL and either download or call the callback
+        const dataUrl = canvas.toDataURL("image/png", 1.0)
+
+        if (onDownload) {
+            onDownload(size, dataUrl)
+        } else {
+            // Default download behavior
+            const link = document.createElement("a")
+            link.download = `green-lantern-badge-top${topRank}percent-${size}.png`
+            link.href = dataUrl
+            link.click()
+        }
     }
 
     const copyEmbedCode = () => {
-        const hostingStatus = getHostingStatus()
         const embedCode = `<!-- Green Lantern Carbon Scanner Badge -->
 <div style="display: inline-block; padding: 15px; background: linear-gradient(135deg, #000 0%, #1f2937 50%, #065f46 100%); border: 2px solid #10b981; border-radius: 8px; color: white; font-family: Arial, sans-serif; text-align: center; max-width: 220px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
   <div style="color: #10b981; font-weight: bold; font-size: 12px; margin-bottom: 5px;">GREEN LANTERN CARBON SCANNER</div>
-  <div style="font-size: 28px; font-weight: bold; margin: 8px 0; color: #ffffff;">${percentage}%</div>
-  <div style="color: #10b981; font-size: 11px; margin-bottom: 8px;">CLEANER THAN OTHER WEBSITES</div>
+  <div style="font-size: 28px; font-weight: bold; margin: 8px 0; color: #ffffff;">Top ${topRank}%</div>
+  <div style="color: #10b981; font-size: 11px; margin-bottom: 8px;">ENVIRONMENTAL PERFORMANCE</div>
   <div style="background: ${rating.color.replace("bg-", "").replace("-500", "").replace("-400", "")}; color: ${rating.color.includes("yellow") || rating.color.includes("green") ? "#000" : "#fff"}; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-bottom: 8px; display: inline-block;">${rating.level.toUpperCase()}</div>
   <div style="color: ${hostingStatus.color}; font-size: 9px; margin-bottom: 5px;">${hostingStatus.text}</div>
   <div style="color: #6b7280; font-size: 8px;">Verified by Green Lantern Scanner</div>
 </div>
 <!-- End Green Lantern Badge -->`
 
-        navigator.clipboard.writeText(embedCode).then(() => {
-            alert("Embed code copied to clipboard! Paste this HTML code on your website to display your environmental badge.")
-        })
+        if (onCopyEmbed) {
+            onCopyEmbed(embedCode)
+        } else {
+            // Default copy behavior
+            navigator.clipboard.writeText(embedCode).then(() => {
+                alert(
+                    "Embed code copied to clipboard! Paste this HTML code on your website to display your environmental badge.",
+                )
+            })
+        }
     }
 
-    const hostingStatus = getHostingStatus()
-
     return (
-        <Card className="bg-gray-800/90 border-green-500/30 backdrop-blur-sm">
+        <Card className={`bg-gray-800/90 border-green-500/30 backdrop-blur-sm ${className}`}>
             <CardHeader>
                 <CardTitle className="text-green-400 flex items-center gap-2">
-                    <Shield className="w-5 h-5"/>
+                    <Shield className="w-5 h-5" />
                     Environmental Performance Badge
                 </CardTitle>
                 <CardDescription className="text-gray-300">
@@ -152,35 +234,64 @@ export const  EnvironmentalBadge = ({ cleanerThan, green, url }: BadgeProps)=> {
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="flex flex-col lg:flex-row h-[200px]  gap-6 items-center">
+                <div className="flex flex-col lg:flex-row gap-6 items-center">
                     {/* Badge Preview */}
-                    <BadgePreview percentage={percentage} rating={rating} hostingStatus={hostingStatus} url={url}/>
+                    <div className="flex-shrink-0">
+                        <div className="relative w-80 h-48 bg-gradient-to-br from-black via-gray-800 to-green-900 border-2 border-green-500 rounded-lg p-4 shadow-lg shadow-green-500/20">
+                            {/* Green Lantern Symbol */}
+                            <div className="absolute top-2 right-2 w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
+                                <Zap className="w-4 h-4 text-green-400" />
+                            </div>
+
+                            {/* Header */}
+                            <div className="text-green-400 font-bold text-sm">GREEN LANTERN</div>
+                            <div className="text-green-400 text-xs">CARBON SCANNER</div>
+
+                            {/* Main Content */}
+                            <div className="mt-6 flex items-end gap-4">
+                                <div>
+                                    <div className="text-white font-bold text-4xl">Top {topRank}%</div>
+                                    <div className="text-green-400 text-xs font-bold">ENVIRONMENTAL</div>
+                                    <div className="text-green-400 text-xs font-bold">PERFORMANCE</div>
+                                </div>
+
+                                <div className="flex-1">
+                                    <Badge className={`${rating.color} text-black text-xs px-2 py-1 mb-2`}>
+                                        {rating.level.toUpperCase()}
+                                    </Badge>
+                                    <div className="text-xs" style={{ color: hostingStatus.color }}>
+                                        {hostingStatus.text}
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="absolute bottom-2 left-4 right-4">
+                                <div className="text-gray-400 text-xs truncate">{url}</div>
+                                <div className="text-gray-500 text-xs">Scanned: {new Date().toLocaleDateString()}</div>
+                            </div>
+                        </div>
+                    </div>
 
                     {/* Actions */}
                     <div className="flex flex-col gap-4 w-full lg:w-auto">
                         <div className="space-y-2">
                             <div className="text-sm font-bold text-green-400 mb-2">Download Badge:</div>
                             <div className="grid grid-cols-3 gap-2">
-                                <Button
-                                    onClick={() => downloadBadge("small")}
-                                    variant="outline"
-                                    className="border-green-500/50 text-green-400 hover:bg-green-500/10 text-xs px-3 py-2"
-                                >
-                                    Small
-                                </Button>
-                                <Button
-                                    onClick={() => downloadBadge("medium")}
-                                    className="bg-green-500 hover:bg-green-600 text-black font-bold text-xs px-3 py-2"
-                                >
-                                    Medium
-                                </Button>
-                                <Button
-                                    onClick={() => downloadBadge("large")}
-                                    variant="outline"
-                                    className="border-green-500/50 text-green-400 hover:bg-green-500/10 text-xs px-3 py-2"
-                                >
-                                    Large
-                                </Button>
+                                {Object.entries(badgeSizes).map(([key, size]) => (
+                                    <Button
+                                        key={key}
+                                        onClick={() => downloadBadge(key)}
+                                        variant={key === "medium" ? "default" : "outline"}
+                                        className={
+                                            key === "medium"
+                                                ? "bg-green-500 hover:bg-green-600 text-black font-bold text-xs px-3 py-2"
+                                                : "border-green-500/50 text-green-400 hover:bg-green-500/10 text-xs px-3 py-2"
+                                        }
+                                    >
+                                        {size.name}
+                                    </Button>
+                                ))}
                             </div>
                         </div>
 
@@ -189,13 +300,12 @@ export const  EnvironmentalBadge = ({ cleanerThan, green, url }: BadgeProps)=> {
                             variant="outline"
                             className="border-green-500/50 text-green-400 hover:bg-green-500/10 px-6 py-3"
                         >
-                            <Globe className="w-5 h-5 mr-2"/>
+                            <Globe className="w-5 h-5 mr-2" />
                             Copy Embed Code
                         </Button>
 
                         <div className="text-xs text-gray-400 max-w-xs">
-                            <strong>For Website Owners:</strong> Download the badge image or copy the embed code to
-                            showcase your
+                            <strong>For Website Owners:</strong> Download the badge image or copy the embed code to showcase your
                             environmental performance on your website.
                         </div>
 
@@ -203,8 +313,7 @@ export const  EnvironmentalBadge = ({ cleanerThan, green, url }: BadgeProps)=> {
                             <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
                                 <div className="text-blue-400 font-bold text-sm mb-1">⚠️ Hosting Status Unknown</div>
                                 <div className="text-gray-300 text-xs">
-                                    Your badge shows "Hosting Unknown" because we couldn't verify if your hosting
-                                    provider uses renewable
+                                    Your badge shows "Hosting Unknown" because we couldn't verify if your hosting provider uses renewable
                                     energy. Contact your hosting provider to confirm their green energy practices.
                                 </div>
                             </div>
@@ -215,21 +324,29 @@ export const  EnvironmentalBadge = ({ cleanerThan, green, url }: BadgeProps)=> {
                 {/* Badge Information */}
                 <div className="mt-6 p-4 bg-green-500/10 rounded-lg border border-green-500/30">
                     <h4 className="text-green-400 font-bold mb-2 flex items-center gap-2">
-                        <Leaf className="w-4 h-4"/>
+                        <Leaf className="w-4 h-4" />
                         Badge Achievement Details
                     </h4>
-                    <div className="grid md:grid-cols-2 gap-4 text-sm">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                         <div>
                             <div className="text-gray-300">Performance Level:</div>
                             <div className="text-white font-bold">{rating.level}</div>
                         </div>
                         <div>
-                            <div className="text-gray-300">Environmental Score:</div>
-                            <div className="text-white font-bold">{percentage}% cleaner than average</div>
+                            <div className="text-gray-300">Environmental Rank:</div>
+                            <div className="text-white font-bold">Top {topRank}% performer</div>
+                        </div>
+                        <div>
+                            <div className="text-gray-300">Database Entry:</div>
+                            <div className="text-white font-bold">Page #{pageNumber.toLocaleString()}</div>
+                        </div>
+                        <div>
+                            <div className="text-gray-300">Domain Pages Scanned:</div>
+                            <div className="text-white font-bold">{pagesScannedForDomain} pages</div>
                         </div>
                         <div>
                             <div className="text-gray-300">Green Hosting:</div>
-                            <div className="text-white font-bold" style={{color: hostingStatus.color}}>
+                            <div className="text-white font-bold" style={{ color: hostingStatus.color }}>
                                 {green === true ? "✓ Verified Green" : green === false ? "✗ Not Green" : "? Status Unknown"}
                             </div>
                         </div>
@@ -243,8 +360,7 @@ export const  EnvironmentalBadge = ({ cleanerThan, green, url }: BadgeProps)=> {
                         <div className="text-green-400 font-bold text-sm mb-2">How to Use Your Badge:</div>
                         <ul className="text-xs text-gray-300 space-y-1">
                             <li>
-                                • <strong>Download:</strong> Choose small (300px), medium (400px), or large (500px)
-                                badge
+                                • <strong>Download:</strong> Choose small (300px), medium (400px), or large (500px) badge
                             </li>
                             <li>
                                 • <strong>Embed:</strong> Copy HTML code to add directly to your website
