@@ -1,6 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import {AlertTriangle, CheckCircle, Shield, XCircle} from "lucide-react";
+import {AlertTriangle, Shield, XCircle} from "lucide-react";
 import {CarbonRating} from "@/types/scanner";
 
 export function cn(...inputs: ClassValue[]) {
