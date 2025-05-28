@@ -45,7 +45,7 @@ export function EnvironmentalBadge({
     const topRank = Math.round((1 - cleanerThan) * 100)
     const rating = getCarbonRating(cleanerThan)
     const hostingStatus = getHostingStatus(green)
-
+    console.log("TOP", topRank)
     const downloadBadge = (size: string) => {
         const sizeConfig = badgeSizes[size]
         if (!sizeConfig) return
@@ -178,10 +178,10 @@ export function EnvironmentalBadge({
                 </CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="flex flex-col lg:flex-row gap-6 items-center">
+                <div className="flex h-[250px] flex-col lg:flex-row gap-6 items-center">
                     {/* Badge Preview */}
-                    <div className="flex-shrink-0">
-                        <div className="relative w-80 h-48 bg-gradient-to-br from-black via-gray-800 to-green-900 border-2 border-green-500 rounded-lg p-4 shadow-lg shadow-green-500/20">
+                    <div className="flex-shrink-0 h-full">
+                        <div className="relative w-80 h-full bg-gradient-to-br from-black via-gray-800 to-green-900 border-2 border-green-500 rounded-lg p-4 shadow-lg shadow-green-500/20">
                             {/* Green Lantern Symbol */}
                             <div className="absolute top-2 right-2 w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center">
                                 <Zap className="w-4 h-4 text-green-400" />

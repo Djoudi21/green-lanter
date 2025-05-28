@@ -47,7 +47,6 @@ let globalPagesScanned = 0 // Starting number
 
 export default function WebScanner() {
   const [url, setUrl] = useState("")
-  // const [isScanning, setIsScanning] = useState(false)
   const [results, setResults] = useState<ScanResults | null>(null)
   const [error, setError] = useState("")
   const [scanInProgress, setScanInProgress] = useState(false)

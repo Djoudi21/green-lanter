@@ -9,18 +9,17 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getCarbonRating(cleanerThan: number): CarbonRating {
   const score = cleanerThan
-  // Handle green hosting with excellent performance
   if (score <= 10)
     return {
       level: "Green Lantern Elite",
-      color: "bg-green-500",
+      color: "bg-green-400",
       icon: Shield,
       message: "Exceptional environmental guardian!",
     }
   if (score > 10 && score <=30)
     return {
       level: "Green Guardian",
-      color: "bg-green-500",
+      color: "bg-green-600",
       icon: Shield,
       message: "Strong environmental protector!",
     }
@@ -28,7 +27,7 @@ export function getCarbonRating(cleanerThan: number): CarbonRating {
   if (score > 30 && score <= 50)
     return {
       level: "Green Ally",
-      color: "bg-green-500",
+      color: "bg-green-800",
       icon: Shield,
       message: "Green hosting verified, though performance could improve!",
     }
@@ -41,9 +40,18 @@ export function getCarbonRating(cleanerThan: number): CarbonRating {
       message: "Good performance, but green hosting status unknown!",
     }
 
+  if (score > 70 && score <= 90)
+    return {
+      level: "Earth Defender",
+      color: "bg-red-500",
+      icon: AlertTriangle,
+      message: "Good performance, but green hosting status unknown!",
+    }
+
   return {
     level: "Needs Power Ring",
-    color: "bg-red-500",
+    color: "black",
+    textColor: "white",
     icon: XCircle,
     message: "Critical optimization needed!",
   }

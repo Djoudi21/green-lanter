@@ -1,4 +1,4 @@
-import {getCarbonRating} from "@/lib/utils";
+import {cn, getCarbonRating} from "@/lib/utils";
 import {Globe} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 import {AdditionalPageResult} from "@/types/scanner";
@@ -17,7 +17,7 @@ export const AdditionalResult = ({page}: {page: AdditionalPageResult}) => {
                     <div className="flex items-center gap-2 mb-2">
                         <Globe className="w-4 h-4 text-green-400" />
                         <span className="text-white font-bold text-sm">{page.path}</span>
-                        <Badge className={`${pageRating.color} text-black text-xs px-2 py-1`}>Top {pageRank}%</Badge>
+                        <Badge className={cn(`text-xs px-2 py-1`, pageRating.color, pageRating.textColor ? pageRating.textColor : 'text-black')}>Top {pageRank}%</Badge>
                     </div>
                     <div className="text-gray-300 text-xs mb-2">{page.url}</div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">

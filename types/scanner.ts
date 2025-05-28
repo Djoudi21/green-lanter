@@ -106,4 +106,5 @@ export interface CarbonRating {
     color: string
     icon: React.ElementType
     message: string
+    textColor?: string
 }
