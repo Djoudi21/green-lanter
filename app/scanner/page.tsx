@@ -18,30 +18,13 @@ import {ScannerInterface} from "@/app/scanner/scanner-interface";
 import {EnvironmentalBadge} from "@/app/scanner/environmental-badge";
 import {AdditionalPages} from "@/app/scanner/additional-pages";
 import {
-  AdditionalPageResult,
   FullScanCarbonAnalysisResponseApi,
   ScanResults,
-  WebsiteCarbonApiResponse
 } from "@/types/scanner";
 import { FullScanCTA } from "./full-scan-cta"
 import {ScanProgress} from "@/app/scanner/scan-progress";
 import {FullScanConfirmationModal} from "@/app/scanner/full-scan-confirmation-modal";
-
-export function mapWebsiteCarbonResponsesToAdditionalPages(
-    responses: WebsiteCarbonApiResponse[] | undefined,
-): AdditionalPageResult[] {
-  if(!responses) return []
-  return responses.map((response, index) => ({
-    id: `${index}-${response.url}`, // Create a unique ID based on index and URL
-    url: response.url,
-    path: new URL(response.url).pathname,
-    green: response.green ?? null,
-    bytes: response.bytes,
-    cleanerThan: response.cleanerThan,
-    co2Grams: response.statistics.co2.grid.grams,
-  }));
-}
-
+import {mapWebsiteCarbonResponsesToAdditionalPages} from "@/lib/utils";
 
 // Global counter for pages scanned (in a real app, this would be stored in a database)
 let globalPagesScanned = 0 // Starting number

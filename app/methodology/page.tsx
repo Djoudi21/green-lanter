@@ -23,7 +23,7 @@ export default function MethodologyPage() {
                             <Calculator className="w-10 h-10 text-black" />
                         </div>
                         <h1 className="text-4xl font-bold text-white mb-2">Calculation Methodology</h1>
-                        <p className="text-green-400 text-lg">How we measure your website's carbon footprint</p>
+                        <p className="text-green-400 text-lg">{"How we measure your website's carbon footprint"}</p>
                     </div>
                 </div>
 
@@ -63,8 +63,7 @@ export default function MethodologyPage() {
                                 .
                             </p>
                             <p>
-                                Our Power Ring technology analyzes multiple factors to determine your website's environmental impact,
-                                providing accurate measurements that help you join the fight against digital pollution.
+                                {"Our Power Ring technology analyzes multiple factors to determine your website's environmental impact, providing accurate measurements that help you join the fight against digital pollution."}
                             </p>
                         </div>
                     </CardContent>
@@ -262,8 +261,7 @@ export default function MethodologyPage() {
                         <div className="space-y-4">
                             <div className="text-gray-300">
                                 <p className="mb-4">
-                                    Your website's rank is calculated by comparing its carbon footprint against our database of tested
-                                    websites:
+                                    {" Your website's rank is calculated by comparing its carbon footprint against our database of tested websites:"}
                                 </p>
                             </div>
                             <div className="bg-green-500/10 p-3 rounded border border-green-500/30">

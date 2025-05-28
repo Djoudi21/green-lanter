@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import {AlertTriangle, Shield, XCircle} from "lucide-react";
-import {CarbonRating} from "@/types/scanner";
+import {AdditionalPageResult, CarbonRating, WebsiteCarbonApiResponse} from "@/types/scanner";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -55,4 +55,19 @@ export function getCarbonRating(cleanerThan: number): CarbonRating {
     icon: XCircle,
     message: "Critical optimization needed!",
   }
+}
+
+export function mapWebsiteCarbonResponsesToAdditionalPages(
+    responses: WebsiteCarbonApiResponse[] | undefined,
+): AdditionalPageResult[] {
+  if(!responses) return []
+  return responses.map((response, index) => ({
+    id: `${index}-${response.url}`, // Create a unique ID based on index and URL
+    url: response.url,
+    path: new URL(response.url).pathname,
+    green: response.green ?? null,
+    bytes: response.bytes,
+    cleanerThan: response.cleanerThan,
+    co2Grams: response.statistics.co2.grid.grams,
+  }));
 }

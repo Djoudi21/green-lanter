@@ -1,9 +1,8 @@
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
-import {ChevronDown, ChevronUp, Database, Globe} from "lucide-react";
+import { Database} from "lucide-react";
 import {AdditionalPageResult} from "@/types/scanner";
 import {useState} from "react";
 import {AdditionalResult} from "@/app/scanner/additional-result";
-import { Button } from "@/components/ui/button";
 
 export interface AdditionalPagesProps {
     pages: AdditionalPageResult[]

@@ -2,10 +2,10 @@
 
 import type React from "react"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Shield, Zap, Globe, Leaf } from "lucide-react"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import {Button} from "@/components/ui/button"
+import {Badge} from "@/components/ui/badge"
+import {Globe, Leaf, Shield, Zap} from "lucide-react"
 import {getCarbonRating} from "@/lib/utils";
 import {BadgeSize, HostingStatus} from "@/types/scanner";
 
@@ -94,15 +94,13 @@ export function EnvironmentalBadge({
         ctx.fillText("PERFORMANCE", 20 * scale, 150 * scale)
 
         // Badge level
-        const badgeColor = rating.color.includes("green")
+        ctx.fillStyle = rating.color.includes("green")
             ? "#10b981"
             : rating.color.includes("yellow")
                 ? "#f59e0b"
                 : rating.color.includes("blue")
                     ? "#3b82f6"
                     : "#ef4444"
-
-        ctx.fillStyle = badgeColor
         ctx.font = `bold ${12 * scale}px Arial`
         ctx.fillText(rating.level.toUpperCase(), 200 * scale, 130 * scale)
 
@@ -256,8 +254,7 @@ export function EnvironmentalBadge({
                             <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
                                 <div className="text-blue-400 font-bold text-sm mb-1">⚠️ Hosting Status Unknown</div>
                                 <div className="text-gray-300 text-xs">
-                                    Your badge shows "Hosting Unknown" because we couldn't verify if your hosting provider uses renewable
-                                    energy. Contact your hosting provider to confirm their green energy practices.
+                                    {"Your badge shows Hosting Unknown because we couldn't verify if your hosting provider uses renewable energy. Contact your hosting provider to confirm their green energy practices."}
                                 </div>
                             </div>
                         )}

@@ -31,8 +31,7 @@ export default function LandingPage() {
                 {"In brightest day, in blackest night, no carbon waste shall escape my sight!"}
               </p>
               <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-                Harness the power of the Green Lantern Corps to scan any website's carbon footprint and protect our
-                digital environment.
+                {"Harness the power of the Green Lantern Corps to scan any website's carbon footprint and protect our digital environment."}
               </p>
             </div>
 
@@ -198,7 +197,7 @@ export default function LandingPage() {
             <Leaf className="w-6 h-6 text-green-500" />
             <span className="text-green-400 font-bold text-lg">Green Lantern Web Scanner</span>
           </div>
-          <p className="text-gray-400">Protecting Earth's digital environment, one website at a time.</p>
+          <p className="text-gray-400">{"Protecting Earth's digital environment, one website at a time."}</p>
           <p className="text-gray-500 text-sm mt-4">
             © 2024 Green Lantern Corps Environmental Division. All rights reserved.
           </p>
