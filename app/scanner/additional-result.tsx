@@ -1,11 +1,11 @@
 import {getCarbonRating} from "@/lib/utils";
 import {Globe} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
+import {AdditionalPageResult} from "@/types/scanner";
 
-export const Toto = ({page}) => {
-    console.log("PAGE", page)
+export const AdditionalResult = ({page}: {page: AdditionalPageResult}) => {
     const pageRank = Math.round((1 - page.cleanerThan) * 100)
-    const pageRating = getCarbonRating(page.cleanerThan, page.green)
+    const pageRating = getCarbonRating(pageRank)
 
     return (
         <div

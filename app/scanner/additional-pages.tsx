@@ -2,7 +2,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {ChevronDown, ChevronUp, Database, Globe} from "lucide-react";
 import {AdditionalPageResult} from "@/types/scanner";
 import {useState} from "react";
-import {Toto} from "@/app/scanner/toto";
+import {AdditionalResult} from "@/app/scanner/additional-result";
 import { Button } from "@/components/ui/button";
 
 export interface AdditionalPagesProps {
@@ -23,8 +23,6 @@ export function AdditionalPages({
                                     maxDisplayedPages = 3,
                                     className = "",
                                 }: AdditionalPagesProps) {
-    console.log("PAGES", pages)
-    const [visibleRemainings, setVisibleRemainings] = useState(false);
     const [showAll, setShowAll] = useState(false)
 
     if (pages.length === 0) {
@@ -37,7 +35,6 @@ export function AdditionalPages({
     // Limit the number of pages displayed
     const displayedPages = pages.slice(0, maxDisplayedPages)
     const remainingPages = totalPagesScanned - displayedPages.length
-    console.log("REMAINING", {remainingPages, displayedPages})
     return (
         <Card className={`bg-gray-800/90 border-green-500/30 backdrop-blur-sm ${className}`}>
             <CardHeader>
@@ -52,12 +49,12 @@ export function AdditionalPages({
             <CardContent>
                 <div className="space-y-4">
                     {displayedPages.map((page) => (
-                        <Toto key={page.id} page={page} />
+                        <AdditionalResult key={page.id} page={page} />
                     ))}
 
                     {showAll &&
                         pages.slice(maxDisplayedPages).map((page) => (
-                            <Toto key={page.id} page={page} />
+                            <AdditionalResult key={page.id} page={page} />
                         ))}
 
                     {remainingPages > 0 && !showAll ? (

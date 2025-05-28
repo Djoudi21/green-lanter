@@ -45,7 +45,7 @@ export interface FullScanCarbonAnalysisResponseApi {
 
 export interface ScanResults {
     url: string
-    green: boolean | null
+    green: boolean | "unknown"
     bytes: number
     cleanerThan: number
     pageNumber: number
@@ -71,11 +71,10 @@ export interface AdditionalPageResult {
     id: string
     url: string
     path: string
-    green: boolean | null
+    green: boolean | "unknown"
     bytes: number
     cleanerThan: number
     co2Grams: number
-    scanDate: string
 }
 
 export interface ScanOption {

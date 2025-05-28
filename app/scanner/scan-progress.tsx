@@ -7,12 +7,10 @@ import { Server, Wifi, Database, Leaf, Globe, Layers } from "lucide-react"
 interface ScanProgressProps {
     type: "single" | "full"
     progress?: number
-    pagesFound?: number
     currentPageNumber?: number
-    hostname?: string
 }
 
-export function ScanProgress({ type, progress = 66, pagesFound, currentPageNumber, hostname }: ScanProgressProps) {
+export function ScanProgress({ type, progress = 66, currentPageNumber }: ScanProgressProps) {
     const formatNumber = (num: number) => num.toLocaleString()
 
     if (type === "single") {
@@ -59,9 +57,6 @@ export function ScanProgress({ type, progress = 66, pagesFound, currentPageNumbe
                     <div className="text-center">
                         <div className="text-green-400 font-bold mb-2">Full Website Scan in Progress...</div>
                         <Progress value={progress} className="h-3 bg-gray-600" />
-                        <div className="text-gray-400 text-sm mt-2">
-                            Scanning {pagesFound} pages found on {hostname}
-                        </div>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                         <div className="text-center text-gray-300">

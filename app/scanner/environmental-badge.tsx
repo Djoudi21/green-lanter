@@ -6,29 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Shield, Zap, Globe, Leaf } from "lucide-react"
-
-export interface BadgeSize {
-    name: string
-    width: number
-    height: number
-    scale: number
-}
-
-export interface HostingStatus {
-    text: string
-    color: string
-}
-
-export interface CarbonRating {
-    level: string
-    color: string
-    icon: React.ElementType
-    message: string
-}
+import {getCarbonRating} from "@/lib/utils";
+import {BadgeSize, HostingStatus} from "@/types/scanner";
 
 export interface BadgeProps {
     cleanerThan: number
-    green: boolean | null
+    green: boolean | "unknown"
     url: string
     pageNumber: number
     pagesScannedForDomain: number
@@ -38,46 +21,7 @@ export interface BadgeProps {
     className?: string
 }
 
-export function getCarbonRating(cleanerThan: number, green: boolean | null): CarbonRating {
-    const score = cleanerThan * 100
-
-    if (green === true && score >= 80)
-        return {
-            level: "Green Lantern Elite",
-            color: "bg-green-500",
-            icon: Shield,
-            message: "Exceptional environmental guardian with verified green hosting!",
-        }
-    if (green === true && score >= 60)
-        return {
-            level: "Green Guardian",
-            color: "bg-green-400",
-            icon: Shield,
-            message: "Strong environmental protector with verified green hosting!",
-        }
-    if (green === null && score >= 70)
-        return {
-            level: "Earth Defender",
-            color: "bg-blue-500",
-            icon: Shield,
-            message: "Good performance, but green hosting status unknown!",
-        }
-    if (score >= 70)
-        return {
-            level: "Earth Defender",
-            color: "bg-yellow-500",
-            icon: Shield,
-            message: "Good performance, consider green hosting!",
-        }
-    return {
-        level: "Needs Power Ring",
-        color: "bg-red-500",
-        icon: Shield,
-        message: "Critical optimization needed - join the green hosting corps!",
-    }
-}
-
-export function getHostingStatus(green: boolean | null): HostingStatus {
+export function getHostingStatus(green: boolean | "unknown"): HostingStatus {
     if (green === true) return { text: "✓ GREEN HOSTING", color: "#10b981" }
     if (green === false) return { text: "✗ STANDARD HOSTING", color: "#ef4444" }
     return { text: "? HOSTING UNKNOWN", color: "#6b7280" }
@@ -99,7 +43,7 @@ export function EnvironmentalBadge({
                                        className = "",
                                    }: BadgeProps) {
     const topRank = Math.round((1 - cleanerThan) * 100)
-    const rating = getCarbonRating(cleanerThan, green)
+    const rating = getCarbonRating(cleanerThan)
     const hostingStatus = getHostingStatus(green)
 
     const downloadBadge = (size: string) => {
@@ -230,7 +174,7 @@ export function EnvironmentalBadge({
                     Environmental Performance Badge
                 </CardTitle>
                 <CardDescription className="text-gray-300">
-                    Download and display your website's environmental achievement
+                    {"Download and display your website's environmental achievement"}
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -309,7 +253,7 @@ export function EnvironmentalBadge({
                             environmental performance on your website.
                         </div>
 
-                        {green === null && (
+                        {green === "unknown" && (
                             <div className="p-3 bg-blue-500/10 rounded-lg border border-blue-500/30">
                                 <div className="text-blue-400 font-bold text-sm mb-1">⚠️ Hosting Status Unknown</div>
                                 <div className="text-gray-300 text-xs">

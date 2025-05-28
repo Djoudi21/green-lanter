@@ -2,8 +2,9 @@
 
 import type React from "react"
 
-import { Button, type ButtonProps } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
 import { Layers, Globe } from "lucide-react"
+type ButtonProps = React.ComponentProps<typeof Button>
 
 export interface FullScanCTAProps {
     hostname: string
@@ -17,14 +18,14 @@ export interface FullScanCTAProps {
 }
 
 export function FullScanCTA({
-                                hostname,
-                                onStartFullScanAction,
-                                title = "Enhance Your Analysis with a Full Website Scan",
-                                description,
-                                buttonText = "Scan Entire Website",
-                                buttonIcon = Globe,
-                                buttonProps,
-                                className = "",
+                            hostname,
+                            onStartFullScanAction,
+                            title = "Enhance Your Analysis with a Full Website Scan",
+                            description,
+                            buttonText = "Scan Entire Website",
+                            buttonIcon = Globe,
+                            buttonProps,
+                            className = "",
                             }: FullScanCTAProps) {
     const ButtonIcon = buttonIcon
     const defaultDescription = `For a more comprehensive environmental assessment, scan all pages on ${hostname}`

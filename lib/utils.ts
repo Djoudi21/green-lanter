@@ -1,55 +1,50 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
-import {AlertTriangle, CheckCircle, XCircle} from "lucide-react";
+import {AlertTriangle, CheckCircle, Shield, XCircle} from "lucide-react";
+import {CarbonRating} from "@/types/scanner";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function getCarbonRating(cleanerThan: number, green: boolean | null) {
-  const score = cleanerThan * 100
-  console.log("LALALLA", {cleanerThan, green})
-  console.log("SCORE", score)
-  if (green === true && score >= 80)
+export function getCarbonRating(cleanerThan: number): CarbonRating {
+  const score = cleanerThan
+  // Handle green hosting with excellent performance
+  if (score <= 10)
     return {
       level: "Green Lantern Elite",
       color: "bg-green-500",
-      icon: CheckCircle,
-      message: "Exceptional environmental guardian with verified green hosting!",
+      icon: Shield,
+      message: "Exceptional environmental guardian!",
     }
-  if (green === true && score >= 60)
+  if (score > 10 && score <=30)
     return {
       level: "Green Guardian",
-      color: "bg-green-400",
-      icon: CheckCircle,
-      message: "Strong environmental protector with verified green hosting!",
+      color: "bg-green-500",
+      icon: Shield,
+      message: "Strong environmental protector!",
     }
-  if (green === null && score >= 70)
+
+  if (score > 30 && score <= 50)
     return {
-      level: "Earth Defender",
-      color: "bg-blue-500",
-      icon: AlertTriangle,
-      message: "Good performance, but green hosting status unknown!",
+      level: "Green Ally",
+      color: "bg-green-500",
+      icon: Shield,
+      message: "Green hosting verified, though performance could improve!",
     }
-  if (score >= 70)
+
+  if (score > 50 && score <= 70)
     return {
       level: "Earth Defender",
       color: "bg-yellow-500",
       icon: AlertTriangle,
-      message: "Good performance, consider green hosting!",
+      message: "Good performance, but green hosting status unknown!",
     }
-  if (green === true) {
-    return {
-      level: "Green Ally",
-      color: "bg-green-500",
-      icon: CheckCircle,
-      message: "Green hosting verified, though performance could improve!",
-    }
-  }
+
   return {
     level: "Needs Power Ring",
     color: "bg-red-500",
     icon: XCircle,
-    message: "Critical optimization needed - join the green hosting corps!",
+    message: "Critical optimization needed!",
   }
 }
