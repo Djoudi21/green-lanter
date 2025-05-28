@@ -8,7 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export function getCarbonRating(cleanerThan: number, green: boolean | null) {
   const score = cleanerThan * 100
-
+  console.log("LALALLA", {cleanerThan, green})
+  console.log("SCORE", score)
   if (green === true && score >= 80)
     return {
       level: "Green Lantern Elite",
@@ -37,6 +38,14 @@ export function getCarbonRating(cleanerThan: number, green: boolean | null) {
       icon: AlertTriangle,
       message: "Good performance, consider green hosting!",
     }
+  if (green === true) {
+    return {
+      level: "Green Ally",
+      color: "bg-green-500",
+      icon: CheckCircle,
+      message: "Green hosting verified, though performance could improve!",
+    }
+  }
   return {
     level: "Needs Power Ring",
     color: "bg-red-500",

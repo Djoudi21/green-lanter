@@ -273,11 +273,6 @@ export default function WebScanner() {
   //   return num.toLocaleString()
   // }
 
-  const handlePageClick = (page: AdditionalPageResult) => {
-    console.log("Page clicked:", page)
-    // In a real app, you might want to show detailed information about the page
-  }
-
   const handleCopyEmbed = (code: string) => {
     navigator.clipboard.writeText(code).then(() => {
       alert("Embed code copied to clipboard! Paste this HTML code on your website to display your environmental badge.")
@@ -486,7 +481,6 @@ export default function WebScanner() {
                   pages={results.additionalPages}
                   totalPagesScanned={results.numberOfPagesScanned}
                   hostname={new URL(results.url).hostname}
-                  onPageClick={handlePageClick}
                   emptyMessage="No additional pages have been scanned yet. Use the 'Scan Entire Website' option to analyze more pages."
               />
             </div>
