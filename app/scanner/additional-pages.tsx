@@ -2,26 +2,16 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import { Database, Globe} from "lucide-react";
 import {getCarbonRating} from "@/lib/utils";
 import {Badge} from "@/components/ui/badge";
-
-export interface PageResult {
-    id: string
-    url: string
-    path: string
-    green: boolean | null
-    bytes: number
-    cleanerThan: number
-    co2Grams: number
-    scanDate: string
-}
+import {AdditionalPageResult} from "@/types/scanner";
 
 export interface AdditionalPagesProps {
-    pages: PageResult[]
+    pages: AdditionalPageResult[]
     totalPagesScanned: number
     hostname: string
     emptyMessage?: string
     maxDisplayedPages?: number
     className?: string
-    onPageClick?: (page: PageResult) => void
+    onPageClick?: (page: AdditionalPageResult) => void
 }
 
 export function AdditionalPages({
@@ -33,6 +23,7 @@ export function AdditionalPages({
                                     className = "",
                                     onPageClick,
                                 }: AdditionalPagesProps) {
+    console.log("PAGES", pages)
 
     if (pages.length === 0) {
         return (
@@ -43,9 +34,8 @@ export function AdditionalPages({
     }
     // Limit the number of pages displayed
     const displayedPages = pages.slice(0, maxDisplayedPages)
-    const remainingPages = totalPagesScanned - displayedPages.length - 1 // -1 for the main page
-
-
+    const remainingPages = totalPagesScanned - displayedPages.length
+    console.log("REMAINING", {remainingPages, displayedPages})
     return (
         <Card className={`bg-gray-800/90 border-green-500/30 backdrop-blur-sm ${className}`}>
             <CardHeader>
@@ -89,10 +79,6 @@ export function AdditionalPages({
                                             <div>
                                                 <div className="text-gray-400">Performance:</div>
                                                 <div className="text-white font-bold">{pageRating.level}</div>
-                                            </div>
-                                            <div>
-                                                <div className="text-gray-400">Scanned:</div>
-                                                <div className="text-white font-bold">{page.scanDate}</div>
                                             </div>
                                         </div>
                                     </div>

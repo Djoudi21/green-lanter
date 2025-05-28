@@ -18,9 +18,31 @@ import Link from "next/link"
 import {ScannerInterface} from "@/app/scanner/scanner-interface";
 import {EnvironmentalBadge} from "@/app/scanner/environmental-badge";
 import {AdditionalPages} from "@/app/scanner/additional-pages";
-import {AdditionalPageResult, FullScanCarbonAnalysisResponseApi, ScanResults} from "@/types/scanner";
+import {
+  AdditionalPageResult,
+  FullScanCarbonAnalysisResponseApi,
+  ScanResults,
+  WebsiteCarbonApiResponse
+} from "@/types/scanner";
 import { FullScanCTA } from "./full-scan-cta"
 import {ScanProgress} from "@/app/scanner/scan-progress";
+
+export function mapWebsiteCarbonResponsesToAdditionalPages(
+    responses: WebsiteCarbonApiResponse[] | undefined,
+): AdditionalPageResult[] {
+  if(!responses) return []
+  return responses.map((response, index) => ({
+    id: `${index}-${response.url}`, // Create a unique ID based on index and URL
+    url: response.url,
+    path: new URL(response.url).pathname,
+    green: response.green ?? null,
+    bytes: response.bytes,
+    cleanerThan: response.cleanerThan,
+    co2Grams: response.statistics.co2.grid.grams,
+    scanDate: new Date(),
+  }));
+}
+
 
 // Global counter for pages scanned (in a real app, this would be stored in a database)
 let globalPagesScanned = 0 // Starting number
@@ -214,6 +236,8 @@ export default function WebScanner() {
       console.log("RESPONSE", res)
       const json: FullScanCarbonAnalysisResponseApi = await res.json()
       console.log("JSON:", json)
+      const mappedAdditionalPages = mapWebsiteCarbonResponsesToAdditionalPages(json.results)
+      console.log('LALALALA', mappedAdditionalPages)
       const mappedResponse = {
         url: json.url,
         green: json.green,
@@ -235,11 +259,11 @@ export default function WebScanner() {
             }
           }
         },
-        additionalPages: [],
+        additionalPages: mappedAdditionalPages,
       }
+      console.log("RESULT", mappedResponse)
       setResults(mappedResponse)
       setScanInProgress(false)
-      setResults(mappedResponse)
     } catch (error) {
       console.log("ERROR", error)
     }
